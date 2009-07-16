@@ -5,7 +5,7 @@ This is no more than a classpath container for Eclipse.
 
 You just add it to your project and it will automatically include all dependencies under SBT's `lib_managed`.
 
- - Download the first release from the `dist` folder
+ - Download the first release from the `dist` folder (click on the jar and then `View Raw`)
  - Drop it into your `plugins` Eclipse directory and restart
  - Right-click on the project -> Build path -> Add libraries...
  - Click on `SBT Eclipse Classpath Container` and Finish
