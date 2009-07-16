@@ -5,7 +5,7 @@ This is no more than a classpath container for Eclipse.
 
 You just add it to your project and it will automatically include all dependencies under SBT's `lib_managed`.
 
- - Download the first release from [here](http://zoptio.nl/projects/sbt-eclipse-plugin/sbt.eclipse_0.1.0.jar)
+ - Download the first release from the `dist` folder
  - Drop it into your `plugins` Eclipse directory and restart
  - Right-click on the project -> Build path -> Add libraries...
  - Click on `SBT Eclipse Classpath Container` and Finish
@@ -27,3 +27,4 @@ To be done
  - Find how to programmatically move it up to avoid conflicts with Scala/JRE
  - Hide the `lib_managed` folder
  - Possibly ping for changes and refresh automatically
+ - Set up an update site if there is enough interest
