@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -20,6 +22,7 @@ public class SbtClasspathContainer implements IClasspathContainer {
 
 	private final IPath path;
 	private final File projectRoot;
+	private final File[] EMPTY_FILE_ARRAY = new File[0];
 
 	public static final Path CLASSPATH_CONTAINER_ID = new Path(
 			"sbt.eclipse.CLASSPATH_CONTAINER");
@@ -57,24 +60,21 @@ public class SbtClasspathContainer implements IClasspathContainer {
 		if (!lib_managed.exists() || !lib_managed.isDirectory())
 			throw new RuntimeException(
 					String.format("The %s directory should exist; you may want to run 'sbt update' and refresh your project workspace.", lib_managed.getAbsolutePath()));
-		Object[] jarArray = getFiles(lib_managed).toArray();
-		File[] jarFileArray = new File[jarArray.length];
-		System.arraycopy(jarArray, 0, jarFileArray, 0, jarArray.length);
-		return jarFileArray;
+		return getFiles(lib_managed).values().toArray(EMPTY_FILE_ARRAY);
 	}
 
-	private List<File> getFiles(File aStartingDir) {
-		List<File> result = new ArrayList<File>();
+	private Map<JarInformation, File> getFiles(File aStartingDir) {
+		Map<JarInformation, File> result = new TreeMap<JarInformation, File>();
 
 		File[] filesAndDirs = aStartingDir.listFiles();
 		List<File> filesDirs = Arrays.asList(filesAndDirs);
 
 		for (File file : filesDirs) {
 			if (file.isFile() && file.getName().endsWith(".jar"))
-				result.add(file);
+				result.put(JarInformation.fromFile(file), file);
 			if (file.isDirectory()) {
-				List<File> deeperList = getFiles(file);
-				result.addAll(deeperList);
+				Map<JarInformation, File> deeperFiles = getFiles(file);
+				result.putAll(deeperFiles);
 			}
 		}
 
