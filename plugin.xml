@@ -15,5 +15,40 @@
             id="sbt.eclipse.CLASSPATH_CONTAINER">
       </classpathContainerInitializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution adaptable="true"
+            id="sbt.eclipse.contribution1"
+            objectClass="org.eclipse.core.resources.IProject">
+         <menu
+               id="sbt.eclipse.menu"
+               label="SBT"
+               path="additions">
+               <separator
+                     name="separator1">
+               </separator>
+         </menu>
+         <action
+               class="sbt.eclipse.popup.actions.ConfigureSourceFoldersAction"
+               enablesFor="1"
+               id="sbt.eclipse.configureSourceFoldersAction"
+               label="Configure source folders"
+               menubarPath="sbt.eclipse.menu/separator1">
+         </action>
+         <action
+               class="sbt.eclipse.popup.actions.HideLibManagedAction"
+               enablesFor="1"
+               id="sbt.eclipse.hideLibManagedAction"
+               label="Hide lib_managed"
+               menubarPath="sbt.eclipse.menu/separator1">
+         </action>
+         <visibility>
+             <objectState
+                   name="nature"
+                   value="org.eclipse.jdt.core.javanature">
+             </objectState>
+         </visibility>
+      </objectContribution>
+   </extension>
 
 </plugin>
