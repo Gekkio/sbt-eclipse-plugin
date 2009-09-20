@@ -40,7 +40,7 @@ public class UnmanagedLibsConfigurer extends AbstractConfigurer {
             return;
 
         List<IPath> wantedLibs = new ArrayList<IPath>();
-        for (File foundLibFile : libFolder.listFiles()) {
+        for (File foundLibFile : libFolder.listFiles(Constants.JAR_FILE_FILTER)) {
             wantedLibs.add(new Path(foundLibFile.getAbsolutePath()));
         }
 
