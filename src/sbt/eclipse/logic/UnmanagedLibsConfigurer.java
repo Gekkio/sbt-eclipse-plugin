@@ -34,8 +34,8 @@ public class UnmanagedLibsConfigurer extends AbstractConfigurer {
     public void run(IProgressMonitor monitor) throws CoreException {
         List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();
 
-        File libFolder = project.getFolder(Constants.DEFAULT_LIB_FOLDER)
-                .getFullPath().toFile();
+        File projectRoot = project.getLocation().makeAbsolute().toFile();
+        File libFolder = new File(projectRoot, Constants.DEFAULT_LIB_FOLDER);
         if (!libFolder.exists())
             return;
 
