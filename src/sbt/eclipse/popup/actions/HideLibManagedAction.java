@@ -4,6 +4,8 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IAction;
 
+import sbt.eclipse.Constants;
+
 /**
  * @author Joonas Javanainen
  * 
@@ -19,7 +21,7 @@ public class HideLibManagedAction extends AbstractProjectAction {
 	 */
 	@Override
 	protected void run(IAction action, IProject project) throws Exception {
-		IFolder managedLib = project.getFolder("lib_managed");
+		IFolder managedLib = project.getFolder(Constants.DEFAULT_MANAGED_LIB_FOLDER);
 		if (managedLib.exists()) {
 			managedLib.setHidden(true);
 		}

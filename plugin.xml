@@ -50,5 +50,13 @@
          </visibility>
       </objectContribution>
    </extension>
-
+   <extension point="org.eclipse.ui.importWizards">
+     <category id="org.eclipse.ui.Basic" name="General"/>
+     <wizard
+           id="sbt.eclipse.SbtImportWizard"
+           class="sbt.eclipse.wizards.SbtImportWizard"
+           category="org.eclipse.ui.Basic"
+           name="Import a project that uses SBT">
+     </wizard>
+   </extension>
 </plugin>
