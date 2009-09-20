@@ -3,9 +3,7 @@ package sbt.eclipse.logic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -45,21 +43,19 @@ public class SourceFoldersConfigurer extends AbstractConfigurer {
 
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
-        Map<SourceFoldersDefinition, List<IPath>> wantedFolders = new HashMap<SourceFoldersDefinition, List<IPath>>();
-        wantedFolders.put(DEFAULT_SOURCES,
-                lookupFolders(DEFAULT_SOURCES.folders));
-        wantedFolders.put(DEFAULT_RESOURCES,
-                lookupFolders(DEFAULT_RESOURCES.folders));
-        wantedFolders.put(DEFAULT_TEST_SOURCES,
-                lookupFolders(DEFAULT_TEST_SOURCES.folders));
-        wantedFolders.put(DEFAULT_TEST_RESOURCES,
-                lookupFolders(DEFAULT_TEST_RESOURCES.folders));
+        List<SourceFoldersDefinition> definitions = Arrays.asList(
+                DEFAULT_SOURCES, DEFAULT_RESOURCES, DEFAULT_TEST_SOURCES,
+                DEFAULT_TEST_RESOURCES);
+        List<List<IPath>> wantedFolders = new ArrayList<List<IPath>>();
+        for (SourceFoldersDefinition definition : definitions) {
+            wantedFolders.add(lookupFolders(definition.folders));
+        }
 
         // Don't try to add source folders that have already been added
         List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();
         for (IClasspathEntry entry : javaProject.getRawClasspath()) {
             if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-                for (List<IPath> wantedFoldersList : wantedFolders.values()) {
+                for (List<IPath> wantedFoldersList : wantedFolders) {
                     wantedFoldersList.remove(entry.getPath());
                 }
             }
@@ -67,14 +63,16 @@ public class SourceFoldersConfigurer extends AbstractConfigurer {
         }
 
         // Add all source folders with respective output paths
-        for (Map.Entry<SourceFoldersDefinition, List<IPath>> entry : wantedFolders
-                .entrySet()) {
-            IPath output = project.getFolder(entry.getKey().output)
-                    .getFullPath();
-            for (IPath path : entry.getValue()) {
+        for (int i = 0; i < definitions.size(); i++) {
+            SourceFoldersDefinition definition = definitions.get(i);
+            List<IPath> wantedFoldersList = wantedFolders.get(i);
+            IPath output = project.getFolder(definition.output).getFullPath();
+            
+            for (IPath path : wantedFoldersList) {
                 classpaths.add(JavaCore.newSourceEntry(path,
                         Constants.EMPTY_PATH_ARRAY, output));
             }
+
         }
         javaProject.setRawClasspath(classpaths
                 .toArray(Constants.EMPTY_CLASSPATHENTRY_ARRAY), monitor);

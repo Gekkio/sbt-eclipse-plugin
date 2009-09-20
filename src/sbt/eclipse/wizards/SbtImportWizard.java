@@ -61,13 +61,12 @@ public class SbtImportWizard extends Wizard implements IImportWizard {
                 project.open(monitor);
 
                 new ClasspathRemoverConfigurer(project).run(monitor);
-                new ClasspathContainerConfigurer(
-                        SbtClasspathContainer.CLASSPATH_CONTAINER_ID, project)
-                        .run(monitor);
-
                 new DefaultOutputPathConfigurer(project).run(monitor);
                 new SourceFoldersConfigurer(project).run(monitor);
                 new UnmanagedLibsConfigurer(project).run(monitor);
+                new ClasspathContainerConfigurer(
+                        SbtClasspathContainer.CLASSPATH_CONTAINER_ID, project)
+                        .run(monitor);
 
                 return Status.OK_STATUS;
             }
