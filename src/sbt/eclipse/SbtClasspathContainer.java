@@ -3,6 +3,7 @@ package sbt.eclipse;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -22,7 +23,6 @@ public class SbtClasspathContainer implements IClasspathContainer {
 
 	private final IPath path;
 	private final File projectRoot;
-	private final File[] EMPTY_FILE_ARRAY = new File[0];
 
 	public static final Path CLASSPATH_CONTAINER_ID = new Path(
 			"sbt.eclipse.CLASSPATH_CONTAINER");
@@ -35,9 +35,19 @@ public class SbtClasspathContainer implements IClasspathContainer {
 
 	public IClasspathEntry[] getClasspathEntries() {
 		ArrayList<IClasspathEntry> entryList = new ArrayList<IClasspathEntry>();
-		for (File jar : getJars())
-			entryList.add(JavaCore.newLibraryEntry(new Path(jar
-					.getAbsolutePath()), null, null));
+        Map<JarInformation, File> libs = new TreeMap<JarInformation, File>();
+        Map<String, File> sources = new HashMap<String, File>();
+        getJars(libs, sources);
+        for (File jar : libs.values()) {
+            String jarName = jar.getName().substring(0, jar.getName().length() - 4);
+            File sourceFile = sources.get(jarName);
+            IPath sourcePath = null;
+            if (sourceFile != null) {
+                sourcePath = new Path(sourceFile.getAbsolutePath());
+            }
+            entryList.add(JavaCore.newLibraryEntry(new Path(jar
+                    .getAbsolutePath()), sourcePath, null));
+        }
 		IClasspathEntry[] entryArray = new IClasspathEntry[entryList.size()];
 		return (IClasspathEntry[]) entryList.toArray(entryArray);
 	}
@@ -54,31 +64,28 @@ public class SbtClasspathContainer implements IClasspathContainer {
 		return path;
 	}
 
-	private File[] getJars() {
-
+	private void getJars(Map<JarInformation, File> libs, Map<String, File> sources) {
 		File lib_managed = new File(projectRoot, "lib_managed");
-		if (!lib_managed.exists() || !lib_managed.isDirectory())
-			throw new RuntimeException(
-					String.format("The %s directory should exist; you may want to run 'sbt update' and refresh your project workspace.", lib_managed.getAbsolutePath()));
-		return getFiles(lib_managed).values().toArray(EMPTY_FILE_ARRAY);
+		if (!lib_managed.exists() || !lib_managed.isDirectory()) return;
+		getFiles(lib_managed, libs, sources);
 	}
 
-	private Map<JarInformation, File> getFiles(File aStartingDir) {
-		Map<JarInformation, File> result = new TreeMap<JarInformation, File>();
-
+	private void getFiles(File aStartingDir, Map<JarInformation, File> libs, Map<String, File> sources) {
 		File[] filesAndDirs = aStartingDir.listFiles();
 		List<File> filesDirs = Arrays.asList(filesAndDirs);
 
 		for (File file : filesDirs) {
-			if (file.isFile() && file.getName().endsWith(".jar"))
-				result.put(JarInformation.fromFile(file), file);
+		    if (file.isFile()) {
+		        if (file.getName().endsWith("-sources.jar")) {
+		            sources.put(file.getName().substring(0, file.getName().length() - 12), file);
+		        } else if (file.getName().endsWith(".jar")) {
+		            libs.put(JarInformation.fromFile(file), file);
+		        }
+		    }
 			if (file.isDirectory()) {
-				Map<JarInformation, File> deeperFiles = getFiles(file);
-				result.putAll(deeperFiles);
+			    getFiles(file, libs, sources);
 			}
 		}
-
-		return result;
 	}
 
 }
