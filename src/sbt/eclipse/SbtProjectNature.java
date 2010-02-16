@@ -7,6 +7,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 
 import sbt.eclipse.logic.ClasspathContainerConfigurer;
+import sbt.eclipse.logic.DefaultOutputPathConfigurer;
 import sbt.eclipse.logic.DerivedFoldersConfigurer;
 import sbt.eclipse.logic.SourceFoldersConfigurer;
 import sbt.eclipse.model.ProjectInformation;
@@ -32,6 +33,8 @@ public class SbtProjectNature implements IProjectNature {
 				SbtClasspathContainer.CLASSPATH_CONTAINER_ID, true).run(null);
 		// Mark all SBT-built folders as derived + hidden
 		new DerivedFoldersConfigurer(project, this, true).run(null);
+		// Set default output path
+		new DefaultOutputPathConfigurer(project, javaProject, this).run(null);
 		// Configure source folders
 		new SourceFoldersConfigurer(project, javaProject, this).run(null);
 		javaProject.save(null, true);
