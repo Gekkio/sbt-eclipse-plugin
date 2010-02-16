@@ -4,7 +4,7 @@ sbt-eclipse-plugin
 ### Installation
 
 Add update site in Eclipse:
-http://www.jawsy.fi/sbt-eclipse
+<http://www.jawsy.fi/sbt-eclipse>
 
 ### Overview
 
