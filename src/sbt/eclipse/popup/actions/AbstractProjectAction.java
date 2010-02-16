@@ -10,6 +10,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
+/**
+ * Abstract action that can be run on multiple projects.
+ */
 public abstract class AbstractProjectAction implements IObjectActionDelegate {
 
 	private ISelection selection;

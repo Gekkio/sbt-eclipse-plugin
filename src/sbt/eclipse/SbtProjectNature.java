@@ -27,9 +27,12 @@ public class SbtProjectNature implements IProjectNature {
 
 	public void updateConfiguration() throws CoreException {
 		IJavaProject javaProject = JavaCore.create(project);
+		// Add managed library container
 		new ClasspathContainerConfigurer(project, javaProject,
 				SbtClasspathContainer.CLASSPATH_CONTAINER_ID, true).run(null);
+		// Mark all SBT-built folders as derived + hidden
 		new DerivedFoldersConfigurer(project, this, true).run(null);
+		// Configure source folders
 		new SourceFoldersConfigurer(project, javaProject, this).run(null);
 		javaProject.save(null, true);
 	}
@@ -46,8 +49,10 @@ public class SbtProjectNature implements IProjectNature {
 			throw new IllegalStateException("Invalid project");
 		}
 		IJavaProject javaProject = JavaCore.create(project);
+		// Remove managed library container
 		new ClasspathContainerConfigurer(project, javaProject,
 				SbtClasspathContainer.CLASSPATH_CONTAINER_ID, false).run(null);
+		// Mark all SBT-built folders as not derived + not hidden
 		new DerivedFoldersConfigurer(project, this, false).run(null);
 		javaProject.save(null, true);
 	}

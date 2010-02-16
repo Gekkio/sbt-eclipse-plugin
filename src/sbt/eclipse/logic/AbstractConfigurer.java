@@ -5,8 +5,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * @author Joonas Javanainen
- * 
+ * Abstract base class for classes that can configure Eclipse projects.
  */
 public abstract class AbstractConfigurer {
 
@@ -16,6 +15,13 @@ public abstract class AbstractConfigurer {
 		this.project = project;
 	}
 
+	/**
+	 * Processes the underlying project.
+	 * 
+	 * @param monitor
+	 *            progress monitor (can be null)
+	 * @throws CoreException
+	 */
 	public abstract void run(IProgressMonitor monitor) throws CoreException;
 
 }

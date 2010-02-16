@@ -14,10 +14,7 @@ import org.eclipse.jdt.core.JavaCore;
 import sbt.eclipse.Constants;
 
 /**
- * Adds/removes a classpath container to a project if it does not yet exist.
- * 
- * @author Joonas Javanainen
- * 
+ * Handles classpath container adding/removal.
  */
 public class ClasspathContainerConfigurer extends AbstractConfigurer {
 
@@ -27,10 +24,6 @@ public class ClasspathContainerConfigurer extends AbstractConfigurer {
 
 	private IPath containerId;
 
-	/**
-	 * @param project
-	 * @throws CoreException
-	 */
 	public ClasspathContainerConfigurer(IProject project,
 			IJavaProject javaProject, IPath containerId, boolean status)
 			throws CoreException {
@@ -75,11 +68,14 @@ public class ClasspathContainerConfigurer extends AbstractConfigurer {
 			if (index < 0) {
 				if (scalaIndex < 0) {
 					if (jreIndex < 0) {
+						// No JRE or Scala, just add the container
 						classpaths.add(container);
 					} else {
+						// Add before JRE container
 						classpaths.add(jreIndex, container);
 					}
 				} else {
+					// Add before Scala container
 					classpaths.add(scalaIndex, container);
 				}
 			}

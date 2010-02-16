@@ -11,6 +11,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import sbt.eclipse.Constants;
 
+/**
+ * Adds/removes a project nature.
+ */
 public class NatureConfigurer extends AbstractConfigurer {
 
 	private final String natureId;

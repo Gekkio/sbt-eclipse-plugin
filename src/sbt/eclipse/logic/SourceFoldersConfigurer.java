@@ -20,19 +20,12 @@ import sbt.eclipse.model.ProjectInformation;
 /**
  * Finds and adds all default source folders and their respective output folders
  * for a project and adds them as build paths.
- * 
- * @author Joonas Javanainen
- * 
  */
 public class SourceFoldersConfigurer extends AbstractConfigurer {
 
 	private final IJavaProject javaProject;
 	private final SbtProjectNature sbtProject;
 
-	/**
-	 * @param project
-	 * @throws CoreException
-	 */
 	public SourceFoldersConfigurer(IProject project, IJavaProject javaProject,
 			SbtProjectNature sbtProject) throws CoreException {
 		super(project);
@@ -45,15 +38,19 @@ public class SourceFoldersConfigurer extends AbstractConfigurer {
 		ProjectInformation pi = sbtProject.getProjectInformation();
 		List<SourceFoldersDefinition> definitions = new ArrayList<SourceFoldersDefinition>();
 
+		// Main sources
 		definitions.add(new SourceFoldersDefinition(pi.getMainCompilePath(), pi
 				.getMainJavaSourcePath(), pi.getMainScalaSourcePath()));
 
+		// Main resources
 		definitions.add(new SourceFoldersDefinition(pi
 				.getMainResourcesOutputPath(), pi.getMainResourcesPath()));
 
+		// Test sources
 		definitions.add(new SourceFoldersDefinition(pi.getTestCompilePath(), pi
 				.getTestJavaSourcePath(), pi.getTestScalaSourcePath()));
 
+		// Test resources
 		definitions.add(new SourceFoldersDefinition(pi
 				.getTestResourcesOutputPath(), pi.getTestResourcesPath()));
 

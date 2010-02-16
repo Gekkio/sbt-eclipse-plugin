@@ -8,6 +8,9 @@ import org.eclipse.jface.action.IAction;
 import sbt.eclipse.Constants;
 import sbt.eclipse.SbtProjectNature;
 
+/**
+ * Updates SBT configuration in a project.
+ */
 public class UpdateConfigurationAction extends AbstractProjectAction {
 
 	@Override

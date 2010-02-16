@@ -7,6 +7,9 @@ import org.eclipse.jface.action.IAction;
 import sbt.eclipse.Constants;
 import sbt.eclipse.logic.NatureConfigurer;
 
+/**
+ * Action that toggles the SBT nature in a project.
+ */
 public class ToggleSbtNatureAction extends AbstractProjectAction {
 
 	@Override

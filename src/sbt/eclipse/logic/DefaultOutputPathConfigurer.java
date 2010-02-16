@@ -10,19 +10,12 @@ import sbt.eclipse.SbtProjectNature;
 
 /**
  * Sets the default output folder for a project.
- * 
- * @author Joonas Javanainen
- * 
  */
 public class DefaultOutputPathConfigurer extends AbstractConfigurer {
 
 	private final IJavaProject javaProject;
 	private final SbtProjectNature sbtProject;
 
-	/**
-	 * @param project
-	 * @throws CoreException
-	 */
 	public DefaultOutputPathConfigurer(IProject project,
 			IJavaProject javaProject, SbtProjectNature sbtProject)
 			throws CoreException {

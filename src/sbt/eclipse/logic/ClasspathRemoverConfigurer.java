@@ -12,17 +12,12 @@ import org.eclipse.jdt.core.IJavaProject;
 import sbt.eclipse.Constants;
 
 /**
- * @author Joonas Javanainen
- * 
+ * Removes all source directories from classpath.
  */
 public class ClasspathRemoverConfigurer extends AbstractConfigurer {
 
 	private final IJavaProject javaProject;
 
-	/**
-	 * @param project
-	 * @throws CoreException
-	 */
 	public ClasspathRemoverConfigurer(IProject project, IJavaProject javaProject)
 			throws CoreException {
 		super(project);

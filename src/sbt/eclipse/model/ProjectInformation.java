@@ -7,6 +7,9 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
+/**
+ * Container class for SBT project information.
+ */
 public class ProjectInformation {
 
 	private final IContainer container;

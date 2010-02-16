@@ -8,15 +8,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import sbt.eclipse.SbtProjectNature;
 import sbt.eclipse.model.ProjectInformation;
 
+/**
+ * Sets all SBT-built folders as derived + hidden.
+ */
 public class DerivedFoldersConfigurer extends AbstractConfigurer {
 
 	private final boolean status;
 	private final SbtProjectNature sbtProject;
 
-	/**
-	 * @param project
-	 * @throws CoreException
-	 */
 	public DerivedFoldersConfigurer(IProject project,
 			SbtProjectNature sbtProject, boolean status) throws CoreException {
 		super(project);

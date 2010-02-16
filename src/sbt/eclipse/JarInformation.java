@@ -3,8 +3,7 @@ package sbt.eclipse;
 import java.io.File;
 
 /**
- * @author Joonas Javanainen
- * 
+ * Identifies a JAR file by its name and size.
  */
 public class JarInformation implements Comparable<JarInformation> {
 
@@ -31,11 +30,6 @@ public class JarInformation implements Comparable<JarInformation> {
 		return size;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -45,11 +39,6 @@ public class JarInformation implements Comparable<JarInformation> {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -69,11 +58,6 @@ public class JarInformation implements Comparable<JarInformation> {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
 	public int compareTo(JarInformation o) {
 		if (o == null)
 			return 1;

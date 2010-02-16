@@ -5,6 +5,13 @@ import org.eclipse.core.runtime.IAdaptable;
 
 public final class Actions {
 
+	/**
+	 * Converts an object into {@link IProject} if possible.
+	 * 
+	 * @param value
+	 *            object to be converted
+	 * @return converted project or null
+	 */
 	public static IProject convertToProject(Object value) {
 		if (value instanceof IProject) {
 			return (IProject) value;
