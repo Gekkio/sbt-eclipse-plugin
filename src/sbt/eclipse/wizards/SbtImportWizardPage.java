@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import sbt.eclipse.model.ProjectInformation;
+import sbt.eclipse.model.BuildProperties;
 
 public class SbtImportWizardPage extends WizardPage {
 
@@ -28,7 +28,7 @@ public class SbtImportWizardPage extends WizardPage {
 	private Label projectVersionLabelResult;
 	private Label sbtVersionLabelResult;
 	private File root;
-	private ProjectInformation projectInfo;
+	private BuildProperties buildProperties;
 	private final boolean scalaAvailable;
 	private final boolean wstAvailable;
 	private boolean scalaProject = false;
@@ -46,8 +46,8 @@ public class SbtImportWizardPage extends WizardPage {
 		return root;
 	}
 
-	public ProjectInformation getProjectInfo() {
-		return projectInfo;
+	public BuildProperties getBuildProperties() {
+		return buildProperties;
 	}
 
 	/**
@@ -165,15 +165,15 @@ public class SbtImportWizardPage extends WizardPage {
 				true, false, 2, 1));
 	}
 
-	protected boolean fillProjectInfo(File buildProperties) {
-		projectInfo = new ProjectInformation(buildProperties);
-		if (projectInfo.name == null) {
+	protected boolean fillProjectInfo(File buildPropertiesFile) {
+		this.buildProperties = new BuildProperties(buildPropertiesFile);
+		if (buildProperties.name == null) {
 			return false;
 		}
-		projectNameLabelResult.setText(projectInfo.name);
-		projectOrganizationLabelResult.setText(projectInfo.organization);
-		projectVersionLabelResult.setText(projectInfo.version);
-		sbtVersionLabelResult.setText(projectInfo.sbtVersion);
+		projectNameLabelResult.setText(buildProperties.name);
+		projectOrganizationLabelResult.setText(buildProperties.organization);
+		projectVersionLabelResult.setText(buildProperties.version);
+		sbtVersionLabelResult.setText(buildProperties.sbtVersion);
 		return true;
 	}
 
@@ -182,7 +182,7 @@ public class SbtImportWizardPage extends WizardPage {
 		if (rootText == null || rootText.isEmpty())
 			return;
 		root = new File(rootText);
-		if (root.exists() && root.isDirectory()) {
+		if (root.isDirectory()) {
 			File projectDir = new File(root, "project");
 			File buildProperties = new File(projectDir, "build.properties");
 			if (buildProperties.isFile()) {
@@ -194,7 +194,7 @@ public class SbtImportWizardPage extends WizardPage {
 			}
 		}
 		setPageComplete(false);
-		projectInfo = null;
+		buildProperties = null;
 		projectNameLabelResult.setText("");
 		projectOrganizationLabelResult.setText("");
 		projectFoundLabelResult.setText("No");

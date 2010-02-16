@@ -27,11 +27,11 @@ public class DerivedFoldersConfigurer extends AbstractConfigurer {
 	@Override
 	public void run(IProgressMonitor monitor) throws CoreException {
 		ProjectInformation pi = sbtProject.getProjectInformation();
-		derived(pi.getOutputRootPath(project));
-		derived(pi.getManagedDependencyRootPath(project));
-		derived(pi.getBuilderProjectOutputPath(project));
-		derived(pi.getPluginsOutputPath(project));
-		derived(pi.getBootPath(project));
+		derived(pi.getOutputRootPath());
+		derived(pi.getManagedDependencyRootPath());
+		derived(pi.getBuilderProjectOutputPath());
+		derived(pi.getPluginsOutputPath());
+		derived(pi.getBootPath());
 	}
 
 	private void derived(IFolder folder) throws CoreException {

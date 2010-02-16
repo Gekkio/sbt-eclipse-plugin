@@ -45,23 +45,17 @@ public class SourceFoldersConfigurer extends AbstractConfigurer {
 		ProjectInformation pi = sbtProject.getProjectInformation();
 		List<SourceFoldersDefinition> definitions = new ArrayList<SourceFoldersDefinition>();
 
-		definitions.add(new SourceFoldersDefinition(pi
-				.getMainCompilePath(project),
-				pi.getMainJavaSourcePath(project), pi
-						.getMainScalaSourcePath(project)));
+		definitions.add(new SourceFoldersDefinition(pi.getMainCompilePath(), pi
+				.getMainJavaSourcePath(), pi.getMainScalaSourcePath()));
 
 		definitions.add(new SourceFoldersDefinition(pi
-				.getMainResourcesOutputPath(project), pi
-				.getMainResourcesPath(project)));
+				.getMainResourcesOutputPath(), pi.getMainResourcesPath()));
+
+		definitions.add(new SourceFoldersDefinition(pi.getTestCompilePath(), pi
+				.getTestJavaSourcePath(), pi.getTestScalaSourcePath()));
 
 		definitions.add(new SourceFoldersDefinition(pi
-				.getTestCompilePath(project),
-				pi.getTestJavaSourcePath(project), pi
-						.getTestScalaSourcePath(project)));
-
-		definitions.add(new SourceFoldersDefinition(pi
-				.getTestResourcesOutputPath(project), pi
-				.getTestResourcesPath(project)));
+				.getTestResourcesOutputPath(), pi.getTestResourcesPath()));
 
 		// Don't try to add source folders that have already been added
 		List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();

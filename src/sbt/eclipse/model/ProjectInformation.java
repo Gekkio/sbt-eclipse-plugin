@@ -1,178 +1,154 @@
 package sbt.eclipse.model;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 public class ProjectInformation {
 
-	public final String name;
-	public final String organization;
-	public final String version;
-	public final String sbtVersion;
-	public final String sbtScalaVersion;
-	public final String buildScalaVersions;
+	private final IContainer container;
+	private final BuildProperties buildProperties;
 
-	public String getMainCompileDirectoryName() {
-		return "classes";
+	public BuildProperties getBuildProperties() {
+		return buildProperties;
 	}
 
-	public String getTestCompileDirectoryName() {
-		return "test-classes";
+	public IPath getMainCompileDirectoryName() {
+		return Path.fromPortableString("classes");
 	}
 
-	public String getResourcesDirectoryName() {
-		return "resources";
+	public IPath getTestCompileDirectoryName() {
+		return Path.fromPortableString("test-classes");
 	}
 
-	public String getTestDirectoryName() {
-		return "test";
+	public IPath getResourcesDirectoryName() {
+		return Path.fromPortableString("resources");
 	}
 
-	public String getSourceDirectoryName() {
-		return "src";
+	public IPath getTestDirectoryName() {
+		return Path.fromPortableString("test");
 	}
 
-	public String getMainDirectoryName() {
-		return "main";
+	public IPath getSourceDirectoryName() {
+		return Path.fromPortableString("src");
 	}
 
-	public String getScalaDirectoryName() {
-		return "scala";
+	public IPath getMainDirectoryName() {
+		return Path.fromPortableString("main");
 	}
 
-	public String getJavaDirectoryName() {
-		return "java";
+	public IPath getScalaDirectoryName() {
+		return Path.fromPortableString("scala");
 	}
 
-	public String getMainResourcesOutputDirectoryName() {
-		return "resources";
+	public IPath getJavaDirectoryName() {
+		return Path.fromPortableString("java");
 	}
 
-	public String getTestResourcesOutputDirectoryName() {
-		return "test-resources";
+	public IPath getMainResourcesOutputDirectoryName() {
+		return Path.fromPortableString("resources");
 	}
 
-	public IFolder getSourcePath(IProject project) {
-		return project.getFolder(getSourceDirectoryName());
+	public IPath getTestResourcesOutputDirectoryName() {
+		return Path.fromPortableString("test-resources");
 	}
 
-	public IFolder getMainSourcePath(IProject project) {
-		return getSourcePath(project).getFolder(getMainDirectoryName());
+	public IFolder getSourcePath() {
+		return container.getFolder(getSourceDirectoryName());
 	}
 
-	public IFolder getMainScalaSourcePath(IProject project) {
-		return getMainSourcePath(project).getFolder(getScalaDirectoryName());
+	public IFolder getMainSourcePath() {
+		return getSourcePath().getFolder(getMainDirectoryName());
 	}
 
-	public IFolder getMainJavaSourcePath(IProject project) {
-		return getMainSourcePath(project).getFolder(getJavaDirectoryName());
+	public IFolder getMainScalaSourcePath() {
+		return getMainSourcePath().getFolder(getScalaDirectoryName());
 	}
 
-	public IFolder getMainResourcesPath(IProject project) {
-		return getMainSourcePath(project)
-				.getFolder(getResourcesDirectoryName());
+	public IFolder getMainJavaSourcePath() {
+		return getMainSourcePath().getFolder(getJavaDirectoryName());
 	}
 
-	public IFolder getMainCompilePath(IProject project) {
-		return getOutputPath(project).getFolder(getMainCompileDirectoryName());
+	public IFolder getMainResourcesPath() {
+		return getMainSourcePath().getFolder(getResourcesDirectoryName());
 	}
 
-	public IFolder getMainResourcesOutputPath(IProject project) {
-		return getOutputPath(project).getFolder(
-				getMainResourcesOutputDirectoryName());
+	public IFolder getMainCompilePath() {
+		return getOutputPath().getFolder(getMainCompileDirectoryName());
 	}
 
-	public IFolder getTestSourcePath(IProject project) {
-		return getSourcePath(project).getFolder(getTestDirectoryName());
+	public IFolder getMainResourcesOutputPath() {
+		return getOutputPath().getFolder(getMainResourcesOutputDirectoryName());
 	}
 
-	public IFolder getTestScalaSourcePath(IProject project) {
-		return getTestSourcePath(project).getFolder(getScalaDirectoryName());
+	public IFolder getTestSourcePath() {
+		return getSourcePath().getFolder(getTestDirectoryName());
 	}
 
-	public IFolder getTestJavaSourcePath(IProject project) {
-		return getTestSourcePath(project).getFolder(getJavaDirectoryName());
+	public IFolder getTestScalaSourcePath() {
+		return getTestSourcePath().getFolder(getScalaDirectoryName());
 	}
 
-	public IFolder getTestResourcesPath(IProject project) {
-		return getTestSourcePath(project)
-				.getFolder(getResourcesDirectoryName());
+	public IFolder getTestJavaSourcePath() {
+		return getTestSourcePath().getFolder(getJavaDirectoryName());
 	}
 
-	public IFolder getTestCompilePath(IProject project) {
-		return getOutputPath(project).getFolder(getTestCompileDirectoryName());
+	public IFolder getTestResourcesPath() {
+		return getTestSourcePath().getFolder(getResourcesDirectoryName());
 	}
 
-	public IFolder getTestResourcesOutputPath(IProject project) {
-		return getOutputPath(project).getFolder(
-				getTestResourcesOutputDirectoryName());
+	public IFolder getTestCompilePath() {
+		return getOutputPath().getFolder(getTestCompileDirectoryName());
 	}
 
-	public IFolder getOutputPath(IProject project) {
-		return getOutputRootPath(project).getFolder("eclipse");
+	public IFolder getTestResourcesOutputPath() {
+		return getOutputPath().getFolder(getTestResourcesOutputDirectoryName());
 	}
 
-	public IFolder getOutputRootPath(IProject project) {
-		return project.getFolder("target");
+	public IFolder getOutputPath() {
+		return getOutputRootPath().getFolder("eclipse");
 	}
 
-	public IFolder getManagedDependencyRootPath(IProject project) {
-		return project.getFolder("lib_managed");
+	public IFolder getOutputRootPath() {
+		return container.getFolder(Path.fromPortableString("target"));
 	}
 
-	public IFolder getBuilderPath(IProject project) {
-		return project.getFolder("project");
+	public IFolder getManagedDependencyRootPath() {
+		return container.getFolder(Path.fromPortableString("lib_managed"));
 	}
 
-	public IFolder getBootPath(IProject project) {
-		return getBuilderPath(project).getFolder("boot");
+	public IFolder getBuilderPath() {
+		return container.getFolder(Path.fromPortableString("project"));
 	}
 
-	public IFolder getBuilderProjectPath(IProject project) {
-		return getBuilderPath(project).getFolder("build");
+	public IFolder getBootPath() {
+		return getBuilderPath().getFolder("boot");
 	}
 
-	public IFolder getBuilderProjectOutputPath(IProject project) {
-		return getBuilderProjectPath(project).getFolder("target");
+	public IFolder getBuilderProjectPath() {
+		return getBuilderPath().getFolder("build");
 	}
 
-	public IFolder getPluginsPath(IProject project) {
-		return getBuilderPath(project).getFolder("plugins");
+	public IFolder getBuilderProjectOutputPath() {
+		return getBuilderProjectPath().getFolder("target");
 	}
 
-	public IFolder getPluginsOutputPath(IProject project) {
-		return getPluginsPath(project).getFolder("target");
+	public IFolder getPluginsPath() {
+		return getBuilderPath().getFolder("plugins");
 	}
 
-	public ProjectInformation(File buildProperties) {
-		FileInputStream input = null;
-		try {
-			input = new FileInputStream(buildProperties);
-			Properties loadedProperties = new Properties();
-			loadedProperties.load(input);
-			name = loadedProperties.getProperty("project.name");
-			organization = loadedProperties.getProperty("project.organization");
-			version = loadedProperties.getProperty("project.version");
-			sbtVersion = loadedProperties.getProperty("sbt.version");
-			sbtScalaVersion = loadedProperties.getProperty("def.scala.version");
-			buildScalaVersions = loadedProperties
-					.getProperty("build.scala.versions");
-		} catch (Exception e) {
-			throw new IllegalStateException("Failed to read build.properties");
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (Exception e) {
-					throw new IllegalStateException(
-							"Failed to close build.properties InputStream", e);
-				}
-			}
-		}
+	public IFolder getPluginsOutputPath() {
+		return getPluginsPath().getFolder("target");
+	}
+
+	public ProjectInformation(IContainer container) {
+		this.container = container;
+		File buildPropertiesFile = getBuilderPath().getFile("build.properties")
+				.getRawLocation().toFile();
+		this.buildProperties = new BuildProperties(buildPropertiesFile);
 	}
 
 }
