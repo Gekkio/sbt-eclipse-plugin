@@ -1,0 +1,11 @@
++ Workspace resolution (M2Eclipse-like)
+  + Should be now possible with SBT natures
++ Support for multiple scala versions
+  + Scala eclipse plugin probably won't like it
+  + At least we should choose one scala version (for choosing the correct lib_managed subdirectory)
++ WTP support
+  + Can now be developed in a separate plugin because the plugin has a master feature
++ Reflection-based reading SBT project files
+  + Might be hard due to complex classloading
++ Global and per-project preferences
++ Automatic dependency refresh

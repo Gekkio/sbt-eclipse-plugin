@@ -20,11 +20,3 @@ Also, if you issue the `sbt update` action, then you need to refresh (F5) your p
 ### Other issues
 I only tested it with Eclipse 3.4 on Linux with Scala 2.7.5-final, and Eclipse 3.5 on Mac OS X with Scala 2.7.5-final.
 Please don't hesitate to contact me at francisco dot treacy at gmail.
-
-To be done
-----------
-
- - Find how to programmatically move it up to avoid conflicts with Scala/JRE (according to people's feedback/ different environments)
- - Hide the `lib_managed` folder
- - Possibly ping for changes and refresh automatically
- - Set up an update site if there is enough interest
