@@ -26,7 +26,7 @@ public class DefaultOutputPathConfigurer extends AbstractConfigurer {
 
 	@Override
 	public void run(IProgressMonitor monitor) throws CoreException {
-		IPath output = sbtProject.getProjectInformation().getOutputPath()
+		IPath output = sbtProject.getProjectInformation().getMainCompilePath()
 				.getFullPath();
 		javaProject.setOutputLocation(output, monitor);
 	}
