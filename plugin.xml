@@ -56,6 +56,7 @@
            id="sbt.eclipse.SbtImportWizard"
            class="sbt.eclipse.wizards.SbtImportWizard"
            category="org.eclipse.ui.Basic"
+           icon="icons/sbt-project.png"
            name="Import a project that uses SBT">
      </wizard>
    </extension>
