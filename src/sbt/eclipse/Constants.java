@@ -34,5 +34,8 @@ public class Constants {
 	public static final IClasspathEntry[] EMPTY_CLASSPATHENTRY_ARRAY = new IClasspathEntry[0];
 	public static final IPath[] EMPTY_PATH_ARRAY = new IPath[0];
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
+	public static final String WST_MODULECORE_NATURE_ID = "org.eclipse.wst.common.modulecore.ModuleCoreNature";
+	public static final String WST_FACET_NATURE_ID = "org.eclipse.wst.common.project.facet.core.nature";
+	public static final String WST_FACET_BUILDER_ID = "org.eclipse.wst.common.project.facet.core.builder";
 
 }

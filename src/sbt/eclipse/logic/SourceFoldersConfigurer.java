@@ -8,12 +8,14 @@ import java.util.List;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 
 import sbt.eclipse.Constants;
+import sbt.eclipse.SbtProjectNature;
+import sbt.eclipse.model.ProjectInformation;
 
 /**
  * Finds and adds all default source folders and their respective output folders
@@ -24,81 +26,80 @@ import sbt.eclipse.Constants;
  */
 public class SourceFoldersConfigurer extends AbstractConfigurer {
 
-    private static final SourceFoldersDefinition DEFAULT_SOURCES = new SourceFoldersDefinition(
-            "target/classes", "src/main/java", "src/main/scala");
-    private static final SourceFoldersDefinition DEFAULT_RESOURCES = new SourceFoldersDefinition(
-            "target/resources", "src/main/resources");
-    private static final SourceFoldersDefinition DEFAULT_TEST_SOURCES = new SourceFoldersDefinition(
-            "target/test-classes", "src/test/java", "src/test/scala");
-    private static final SourceFoldersDefinition DEFAULT_TEST_RESOURCES = new SourceFoldersDefinition(
-            "target/test-resources", "src/test/resources");
+	private final IJavaProject javaProject;
+	private final SbtProjectNature sbtProject;
 
-    /**
-     * @param project
-     * @throws CoreException
-     */
-    public SourceFoldersConfigurer(IProject project) throws CoreException {
-        super(project);
-    }
+	/**
+	 * @param project
+	 * @throws CoreException
+	 */
+	public SourceFoldersConfigurer(IProject project, IJavaProject javaProject,
+			SbtProjectNature sbtProject) throws CoreException {
+		super(project);
+		this.javaProject = javaProject;
+		this.sbtProject = sbtProject;
+	}
 
-    @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
-        List<SourceFoldersDefinition> definitions = Arrays.asList(
-                DEFAULT_SOURCES, DEFAULT_RESOURCES, DEFAULT_TEST_SOURCES,
-                DEFAULT_TEST_RESOURCES);
-        List<List<IPath>> wantedFolders = new ArrayList<List<IPath>>();
-        for (SourceFoldersDefinition definition : definitions) {
-            wantedFolders.add(lookupFolders(definition.folders));
-        }
+	@Override
+	public void run(IProgressMonitor monitor) throws CoreException {
+		ProjectInformation pi = sbtProject.getProjectInformation();
+		List<SourceFoldersDefinition> definitions = new ArrayList<SourceFoldersDefinition>();
 
-        // Don't try to add source folders that have already been added
-        List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();
-        for (IClasspathEntry entry : javaProject.getRawClasspath()) {
-            if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-                for (List<IPath> wantedFoldersList : wantedFolders) {
-                    wantedFoldersList.remove(entry.getPath());
-                }
-            }
-            classpaths.add(entry);
-        }
+		definitions.add(new SourceFoldersDefinition(pi
+				.getMainCompilePath(project),
+				pi.getMainJavaSourcePath(project), pi
+						.getMainScalaSourcePath(project)));
 
-        // Add all source folders with respective output paths
-        for (int i = 0; i < definitions.size(); i++) {
-            SourceFoldersDefinition definition = definitions.get(i);
-            List<IPath> wantedFoldersList = wantedFolders.get(i);
-            IPath output = project.getFolder(definition.output).getFullPath();
-            
-            for (IPath path : wantedFoldersList) {
-                classpaths.add(JavaCore.newSourceEntry(path,
-                        Constants.EMPTY_PATH_ARRAY, output));
-            }
+		definitions.add(new SourceFoldersDefinition(pi
+				.getMainResourcesOutputPath(project), pi
+				.getMainResourcesPath(project)));
 
-        }
-        javaProject.setRawClasspath(classpaths
-                .toArray(Constants.EMPTY_CLASSPATHENTRY_ARRAY), monitor);
-    }
+		definitions.add(new SourceFoldersDefinition(pi
+				.getTestCompilePath(project),
+				pi.getTestJavaSourcePath(project), pi
+						.getTestScalaSourcePath(project)));
 
-    private List<IPath> lookupFolders(Collection<String> wantedFolders) {
-        List<IPath> result = new ArrayList<IPath>();
-        for (String path : wantedFolders) {
-            IFolder folder = project.getFolder(path);
-            if (folder.exists()) {
-                result.add(folder.getFullPath());
-            }
-        }
-        return result;
-    }
+		definitions.add(new SourceFoldersDefinition(pi
+				.getTestResourcesOutputPath(project), pi
+				.getTestResourcesPath(project)));
 
-    protected static class SourceFoldersDefinition {
+		// Don't try to add source folders that have already been added
+		List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();
+		for (IClasspathEntry entry : javaProject.getRawClasspath()) {
+			if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+				for (SourceFoldersDefinition sourceFolders : definitions) {
+					sourceFolders.folders.remove(project.getFolder(entry
+							.getPath()));
+				}
+			}
+			classpaths.add(entry);
+		}
 
-        public final Collection<String> folders;
-        public final String output;
+		// Add all source folders with respective output paths
+		for (SourceFoldersDefinition definition : definitions) {
+			for (IFolder singleFolder : definition.folders) {
+				if (singleFolder.exists()) {
+					classpaths.add(JavaCore.newSourceEntry(singleFolder
+							.getFullPath(), Constants.EMPTY_PATH_ARRAY,
+							definition.output.getFullPath()));
+				}
+			}
+		}
 
-        public SourceFoldersDefinition(String output, String... sourceFolders) {
-            this.folders = Arrays.asList(sourceFolders);
-            this.output = output;
-        }
+		javaProject.setRawClasspath(classpaths
+				.toArray(Constants.EMPTY_CLASSPATHENTRY_ARRAY), monitor);
+	}
 
-    }
+	protected static class SourceFoldersDefinition {
+
+		public final Collection<IFolder> folders;
+		public final IFolder output;
+
+		public SourceFoldersDefinition(IFolder output, IFolder... sourceFolders) {
+			this.folders = Arrays.asList(sourceFolders);
+			this.output = output;
+		}
+
+	}
 
 }

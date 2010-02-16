@@ -4,8 +4,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
 
-import sbt.eclipse.Constants;
+import sbt.eclipse.SbtProjectNature;
 
 /**
  * Sets the default output folder for a project.
@@ -15,19 +16,26 @@ import sbt.eclipse.Constants;
  */
 public class DefaultOutputPathConfigurer extends AbstractConfigurer {
 
-    /**
-     * @param project
-     * @throws CoreException
-     */
-    public DefaultOutputPathConfigurer(IProject project) throws CoreException {
-        super(project);
-    }
+	private final IJavaProject javaProject;
+	private final SbtProjectNature sbtProject;
 
-    @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
-        IPath outputFolder = project.getFolder(Constants.DEFAULT_OUTPUT_FOLDER)
-                .getFullPath();
-        javaProject.setOutputLocation(outputFolder, monitor);
-    }
+	/**
+	 * @param project
+	 * @throws CoreException
+	 */
+	public DefaultOutputPathConfigurer(IProject project,
+			IJavaProject javaProject, SbtProjectNature sbtProject)
+			throws CoreException {
+		super(project);
+		this.javaProject = javaProject;
+		this.sbtProject = sbtProject;
+	}
+
+	@Override
+	public void run(IProgressMonitor monitor) throws CoreException {
+		IPath output = sbtProject.getProjectInformation().getOutputRootPath(
+				project).getProjectRelativePath();
+		javaProject.setOutputLocation(output, monitor);
+	}
 
 }

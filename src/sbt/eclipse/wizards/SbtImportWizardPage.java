@@ -29,6 +29,18 @@ public class SbtImportWizardPage extends WizardPage {
 	private Label sbtVersionLabelResult;
 	private File root;
 	private ProjectInformation projectInfo;
+	private final boolean scalaAvailable;
+	private final boolean wstAvailable;
+	private boolean scalaProject = false;
+	private boolean warProject = false;
+
+	public boolean isScalaProject() {
+		return scalaProject;
+	}
+
+	public boolean isWarProject() {
+		return warProject;
+	}
 
 	public File getRoot() {
 		return root;
@@ -41,8 +53,12 @@ public class SbtImportWizardPage extends WizardPage {
 	/**
 	 * @param pageName
 	 */
-	protected SbtImportWizardPage(String pageName) {
+	protected SbtImportWizardPage(String pageName, boolean scalaAvailable,
+			boolean wstAvailable) {
 		super(pageName);
+		this.scalaAvailable = scalaAvailable;
+		this.scalaProject = scalaAvailable;
+		this.wstAvailable = wstAvailable;
 		setTitle("Select SBT project");
 		setDescription("Import SBT project by selecting its root directory");
 	}
@@ -74,6 +90,42 @@ public class SbtImportWizardPage extends WizardPage {
 					selectRootText.setText(result);
 			}
 		});
+
+		final Button scalaCheckbox = new Button(composite, SWT.CHECK);
+		if (scalaAvailable) {
+			scalaCheckbox.setSelection(scalaProject);
+			scalaCheckbox.setText("Scala project");
+			scalaCheckbox.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent event) {
+					scalaProject = scalaCheckbox.getSelection();
+				}
+			});
+		} else {
+			scalaCheckbox.setEnabled(false);
+			scalaCheckbox.setForeground(this.getShell().getDisplay()
+					.getSystemColor(SWT.COLOR_DARK_RED));
+			scalaCheckbox.setText("No Scala plugin installed");
+		}
+		scalaCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
+				false, 3, 1));
+
+		final Button warCheckbox = new Button(composite, SWT.CHECK);
+		if (wstAvailable) {
+			warCheckbox.setSelection(warProject);
+			warCheckbox.setText("WAR project");
+			warCheckbox.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent event) {
+					warProject = warCheckbox.getSelection();
+				}
+			});
+		} else {
+			warCheckbox.setEnabled(false);
+			warCheckbox.setForeground(this.getShell().getDisplay()
+					.getSystemColor(SWT.COLOR_DARK_RED));
+			warCheckbox.setText("No WST plugin installed");
+		}
+		warCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
+				false, 3, 1));
 
 		Group projectInfoGroup = new Group(composite, SWT.SHADOW_OUT);
 		projectInfoGroup.setText("Project information");
