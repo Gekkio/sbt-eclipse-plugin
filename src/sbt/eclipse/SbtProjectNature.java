@@ -26,16 +26,20 @@ public class SbtProjectNature implements IProjectNature {
 		return (SbtProjectNature) project.getNature(Constants.SBT_NATURE_ID);
 	}
 
-	public void configure() throws CoreException {
-		if (project == null || !project.isOpen()) {
-			throw new IllegalStateException("Invalid project");
-		}
+	public void updateConfiguration() throws CoreException {
 		IJavaProject javaProject = JavaCore.create(project);
 		new ClasspathContainerConfigurer(project, javaProject,
 				SbtClasspathContainer.CLASSPATH_CONTAINER_ID, true).run(null);
 		new DerivedFoldersConfigurer(project, this, true).run(null);
 		new SourceFoldersConfigurer(project, javaProject, this).run(null);
 		javaProject.save(null, true);
+	}
+
+	public void configure() throws CoreException {
+		if (project == null || !project.isOpen()) {
+			throw new IllegalStateException("Invalid project");
+		}
+		updateConfiguration();
 	}
 
 	public void deconfigure() throws CoreException {

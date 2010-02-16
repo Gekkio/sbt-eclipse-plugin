@@ -26,6 +26,10 @@
 				enablesFor="+" id="sbt.eclipse.removeSbtNatureAction" label="Remove SBT nature"
 				menubarPath="sbt.eclipse.menu/content">
 			</action>
+			<action class="sbt.eclipse.popup.actions.UpdateConfigurationAction"
+				enablesFor="+" id="sbt.eclipse.updateConfigurationAction" label="Update project configuration"
+				menubarPath="sbt.eclipse.menu/content">
+			</action>
 			<visibility>
 				<objectState name="nature" value="sbt.eclipse.nature" />
 			</visibility>
