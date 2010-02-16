@@ -8,12 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+
+import sbt.eclipse.model.BuildProperties;
+import sbt.eclipse.model.ProjectInformation;
 
 /**
  * @author Francisco Treacy
@@ -23,6 +28,8 @@ public class SbtClasspathContainer implements IClasspathContainer {
 
 	private final IPath path;
 	private final File projectRoot;
+	private final IWorkspace workspace;
+	private final SbtProjectNature sbtProject;
 
 	public static final Path CLASSPATH_CONTAINER_ID = new Path(
 			"sbt.eclipse.CLASSPATH_CONTAINER");
@@ -64,26 +71,37 @@ public class SbtClasspathContainer implements IClasspathContainer {
 		return path;
 	}
 
-	private void getJars(Map<JarInformation, File> libs, Map<String, File> sources) {
-		File lib_managed = new File(projectRoot, "lib_managed");
-		if (!lib_managed.exists() || !lib_managed.isDirectory()) return;
+	private void getJars(Map<JarInformation, File> libs,
+			Map<String, File> sources) {
+		File lib_managed;
+		if (this.sbtProject != null) {
+			ProjectInformation pi = this.sbtProject.getProjectInformation();
+			lib_managed = pi.getManagedDependencyPath().getRawLocation()
+					.toFile();
+		} else {
+			lib_managed = new File(projectRoot, "lib_managed");
+		}
+		if (!lib_managed.exists() || !lib_managed.isDirectory())
+			return;
 		getFiles(lib_managed, libs, sources);
 	}
 
-	private void getFiles(File aStartingDir, Map<JarInformation, File> libs, Map<String, File> sources) {
+	private void getFiles(File aStartingDir, Map<JarInformation, File> libs,
+			Map<String, File> sources) {
 		File[] filesAndDirs = aStartingDir.listFiles();
 		List<File> filesDirs = Arrays.asList(filesAndDirs);
 
 		for (File file : filesDirs) {
-		    if (file.isFile()) {
-		        if (file.getName().endsWith("-sources.jar")) {
-		            sources.put(file.getName().substring(0, file.getName().length() - 12), file);
-		        } else if (file.getName().endsWith(".jar")) {
-		            libs.put(JarInformation.fromFile(file), file);
-		        }
-		    }
+			if (file.isFile()) {
+				if (file.getName().endsWith("-sources.jar")) {
+					sources.put(file.getName().substring(0,
+							file.getName().length() - 12), file);
+				} else if (file.getName().endsWith(".jar")) {
+					libs.put(JarInformation.fromFile(file), file);
+				}
+			}
 			if (file.isDirectory()) {
-			    getFiles(file, libs, sources);
+				getFiles(file, libs, sources);
 			}
 		}
 	}
