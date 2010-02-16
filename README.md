@@ -1,6 +1,15 @@
 sbt-eclipse-plugin
 ==================
 
+### Installation
+
+Add update site in Eclipse:
+http://www.jawsy.fi/sbt-eclipse
+
+### Overview
+
+**NOTE! This README is out of date.**
+
 This is no more than a classpath container for Eclipse.
 
 You just add it to your project and it will automatically include all dependencies under SBT's `lib_managed`.
