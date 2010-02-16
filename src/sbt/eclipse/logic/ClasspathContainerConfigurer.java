@@ -20,34 +20,51 @@ import sbt.eclipse.Constants;
  */
 public class ClasspathContainerConfigurer extends AbstractConfigurer {
 
-    private IPath containerId;
+	private IPath containerId;
 
-    /**
-     * @param project
-     * @throws CoreException
-     */
-    public ClasspathContainerConfigurer(IPath containerId, IProject project)
-            throws CoreException {
-        super(project);
-        this.containerId = containerId;
-    }
+	/**
+	 * @param project
+	 * @throws CoreException
+	 */
+	public ClasspathContainerConfigurer(IPath containerId, IProject project)
+			throws CoreException {
+		super(project);
+		this.containerId = containerId;
+	}
 
-    @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
-        List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();
+	@Override
+	public void run(IProgressMonitor monitor) throws CoreException {
+		List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();
 
-        for (IClasspathEntry entry : javaProject.getRawClasspath()) {
-            if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-                if (entry.getPath().equals(containerId)) {
-                    return;
-                }
-            }
-            classpaths.add(entry);
-        }
+		IClasspathEntry scalaContainer = null;
+		IClasspathEntry jreContainer = null;
+		for (IClasspathEntry entry : javaProject.getRawClasspath()) {
+			if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+				IPath path = entry.getPath();
+				if (path.equals(containerId)) {
+					return;
+				} else if (path.equals(Constants.JRE_CONTAINER_ID)) {
+					jreContainer = entry;
+				} else if (path.equals(Constants.SCALA_CONTAINER_ID)) {
+					scalaContainer = entry;
+				}
+			}
+			classpaths.add(entry);
+		}
 
-        classpaths.add(JavaCore.newContainerEntry(containerId));
-        javaProject.setRawClasspath(classpaths
-                .toArray(Constants.EMPTY_CLASSPATHENTRY_ARRAY), monitor);
-    }
+		IClasspathEntry container = JavaCore.newContainerEntry(containerId);
+		if (scalaContainer == null) {
+			if (jreContainer == null) {
+				classpaths.add(container);
+			} else {
+				classpaths.add(classpaths.indexOf(jreContainer), container);
+			}
+		} else {
+			classpaths.add(classpaths.indexOf(scalaContainer), container);
+		}
+
+		javaProject.setRawClasspath(classpaths
+				.toArray(Constants.EMPTY_CLASSPATHENTRY_ARRAY), monitor);
+	}
 
 }

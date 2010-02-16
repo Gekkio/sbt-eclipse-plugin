@@ -8,18 +8,18 @@ import org.eclipse.jdt.core.JavaCore;
 
 /**
  * @author Joonas Javanainen
- *
+ * 
  */
 public abstract class AbstractConfigurer {
-    
-    protected IJavaProject javaProject;
-    protected IProject project;
 
-    public AbstractConfigurer(IProject project) throws CoreException {
-        this.javaProject = (IJavaProject) project.getNature(JavaCore.NATURE_ID);
-        this.project = project;
-    }    
-    
-    public abstract void run(IProgressMonitor monitor) throws CoreException;
+	protected IJavaProject javaProject;
+	protected IProject project;
+
+	public AbstractConfigurer(IProject project) throws CoreException {
+		this.javaProject = (IJavaProject) JavaCore.create(project);
+		this.project = project;
+	}
+
+	public abstract void run(IProgressMonitor monitor) throws CoreException;
 
 }
