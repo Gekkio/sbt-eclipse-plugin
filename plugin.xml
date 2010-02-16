@@ -1,63 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension point="org.eclipse.jdt.ui.classpathContainerPage">
-      <classpathContainerPage
-            class="sbt.eclipse.SbtClasspathContainerPage"
-            id="sbt.eclipse.CLASSPATH_CONTAINER"
-            name="SBT Dependency Library">
-      </classpathContainerPage>
-   </extension>
+	<extension point="org.eclipse.jdt.ui.classpathContainerPage">
+		<classpathContainerPage class="sbt.eclipse.SbtClasspathContainerPage"
+			id="sbt.eclipse.CLASSPATH_CONTAINER" name="SBT Dependency Library">
+		</classpathContainerPage>
+	</extension>
 
-   <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
-            class="sbt.eclipse.SbtClasspathContainerInitializer"
-            id="sbt.eclipse.CLASSPATH_CONTAINER">
-      </classpathContainerInitializer>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution adaptable="true"
-            id="sbt.eclipse.contribution1"
-            objectClass="org.eclipse.core.resources.IProject">
-         <menu
-               id="sbt.eclipse.menu"
-               label="SBT"
-               path="additions">
-               <separator
-                     name="separator1">
-               </separator>
-         </menu>
-         <action
-               class="sbt.eclipse.popup.actions.ConfigureSourceFoldersAction"
-               enablesFor="1"
-               id="sbt.eclipse.configureSourceFoldersAction"
-               label="Configure source folders"
-               menubarPath="sbt.eclipse.menu/separator1">
-         </action>
-         <action
-               class="sbt.eclipse.popup.actions.HideLibManagedAction"
-               enablesFor="1"
-               id="sbt.eclipse.hideLibManagedAction"
-               label="Hide lib_managed"
-               menubarPath="sbt.eclipse.menu/separator1">
-         </action>
-         <visibility>
-             <objectState
-                   name="nature"
-                   value="org.eclipse.jdt.core.javanature">
-             </objectState>
-         </visibility>
-      </objectContribution>
-   </extension>
-   <extension point="org.eclipse.ui.importWizards">
-     <category id="org.eclipse.ui.Basic" name="General"/>
-     <wizard
-           id="sbt.eclipse.SbtImportWizard"
-           class="sbt.eclipse.wizards.SbtImportWizard"
-           category="org.eclipse.ui.Basic"
-           icon="icons/sbt-project.png"
-           name="Import a project that uses SBT">
-     </wizard>
-   </extension>
+	<extension point="org.eclipse.jdt.core.classpathContainerInitializer">
+		<classpathContainerInitializer
+			class="sbt.eclipse.SbtClasspathContainerInitializer" id="sbt.eclipse.CLASSPATH_CONTAINER">
+		</classpathContainerInitializer>
+	</extension>
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution adaptable="true"
+			id="sbt.eclipse.projectMenus" objectClass="org.eclipse.jdt.core.IJavaProject">
+			<menu id="sbt.eclipse.menu" label="SBT" path="additions">
+				<groupMarker name="content" />
+				<separator name="additions" />
+			</menu>
+		</objectContribution>
+		<objectContribution adaptable="true"
+			id="sbt.eclipse.sbtProjectMenus" objectClass="org.eclipse.jdt.core.IJavaProject">
+			<action class="sbt.eclipse.popup.actions.ToggleSbtNatureAction"
+				enablesFor="+" id="sbt.eclipse.removeSbtNatureAction" label="Remove SBT nature"
+				menubarPath="sbt.eclipse.menu/content">
+			</action>
+			<visibility>
+				<objectState name="nature" value="sbt.eclipse.nature" />
+			</visibility>
+		</objectContribution>
+		<objectContribution adaptable="true"
+			id="sbt.eclipse.nonSbtProjectMenus" objectClass="org.eclipse.jdt.core.IJavaProject">
+			<action class="sbt.eclipse.popup.actions.ToggleSbtNatureAction"
+				enablesFor="+" id="sbt.eclipse.addSbtNatureAction" label="Add SBT nature"
+				menubarPath="sbt.eclipse.menu/content">
+			</action>
+			<visibility>
+				<not>
+					<objectState name="nature" value="sbt.eclipse.nature" />
+				</not>
+			</visibility>
+		</objectContribution>
+	</extension>
+	<extension point="org.eclipse.ui.importWizards">
+		<category id="org.eclipse.ui.Basic" name="General" />
+		<wizard id="sbt.eclipse.SbtImportWizard" class="sbt.eclipse.wizards.SbtImportWizard"
+			category="org.eclipse.ui.Basic" icon="icons/sbt-project.png" name="Import a project that uses SBT">
+		</wizard>
+	</extension>
+	<extension id="nature" point="org.eclipse.core.resources.natures">
+		<runtime>
+			<run class="sbt.eclipse.SbtProjectNature" />
+		</runtime>
+		<requires-nature id="org.eclipse.jdt.core.javanature" />
+	</extension>
 </plugin>
