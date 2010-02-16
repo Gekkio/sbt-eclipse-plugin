@@ -73,18 +73,20 @@ public class SourceFoldersConfigurer extends AbstractConfigurer {
 			classpaths.add(entry);
 		}
 
+		List<IClasspathEntry> newClasspaths = new ArrayList<IClasspathEntry>();
 		// Add all source folders with respective output paths
 		for (SourceFoldersDefinition definition : definitions) {
 			for (IFolder singleFolder : definition.folders) {
 				if (singleFolder.exists()) {
-					classpaths.add(JavaCore.newSourceEntry(singleFolder
+					newClasspaths.add(JavaCore.newSourceEntry(singleFolder
 							.getFullPath(), Constants.EMPTY_PATH_ARRAY,
 							definition.output.getFullPath()));
 				}
 			}
 		}
+		newClasspaths.addAll(classpaths);
 
-		javaProject.setRawClasspath(classpaths
+		javaProject.setRawClasspath(newClasspaths
 				.toArray(Constants.EMPTY_CLASSPATHENTRY_ARRAY), monitor);
 	}
 
