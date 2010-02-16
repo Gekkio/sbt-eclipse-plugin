@@ -67,9 +67,13 @@ public class SourceFoldersConfigurer extends AbstractConfigurer {
 		List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();
 		for (IClasspathEntry entry : javaProject.getRawClasspath()) {
 			if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-				for (SourceFoldersDefinition sourceFolders : definitions) {
-					sourceFolders.folders.remove(project.getFolder(entry
-							.getPath()));
+				IFolder folder = project.getFolder(entry.getPath());
+				if (folder.exists()) {
+					for (SourceFoldersDefinition sourceFolders : definitions) {
+						sourceFolders.folders.remove(folder);
+					}
+				} else {
+					continue;
 				}
 			}
 			classpaths.add(entry);
