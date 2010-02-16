@@ -48,8 +48,7 @@ public class SbtImportWizard extends Wizard implements IImportWizard {
             public IStatus runInWorkspace(IProgressMonitor monitor)
                     throws CoreException {
                 IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                String name = page.getLoadedProperties().getProperty(
-                        "project.name");
+                String name = page.getProjectInfo().name;
                 IProjectDescription description = workspace
                         .newProjectDescription(name);
                 description.setLocation(new Path(page.getRoot()
