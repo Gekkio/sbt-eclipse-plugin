@@ -15,6 +15,14 @@ public class ProjectInformation {
 	private final IContainer container;
 	private final BuildProperties buildProperties;
 
+	/**
+	 * Should be configurable but currently just takes the first scala version.
+	 */
+	public String getScalaVersion() {
+		String[] versions = buildProperties.buildScalaVersions.split("\\s+");
+		return versions[0];
+	}
+
 	public BuildProperties getBuildProperties() {
 		return buildProperties;
 	}
@@ -109,6 +117,10 @@ public class ProjectInformation {
 
 	public IFolder getTestResourcesOutputPath() {
 		return getOutputPath().getFolder(getTestResourcesOutputDirectoryName());
+	}
+
+	public IFolder getCrossPath(IFolder path) {
+		return path.getFolder("scala_" + getScalaVersion());
 	}
 
 	public IFolder getOutputPath() {
