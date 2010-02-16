@@ -131,6 +131,10 @@ public class ProjectInformation {
 		return container.getFolder(Path.fromPortableString("target"));
 	}
 
+	public IFolder getManagedDependencyPath() {
+		return getCrossPath(getManagedDependencyRootPath());
+	}
+
 	public IFolder getManagedDependencyRootPath() {
 		return container.getFolder(Path.fromPortableString("lib_managed"));
 	}

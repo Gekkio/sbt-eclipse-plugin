@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
@@ -38,23 +39,78 @@ public class SbtClasspathContainer implements IClasspathContainer {
 		this.path = path;
 		this.projectRoot = project.getProject().getLocation().makeAbsolute()
 				.toFile();
+		SbtProjectNature sbtProject = null;
+		try {
+			sbtProject = (SbtProjectNature) project.getProject().getNature(
+					Constants.SBT_NATURE_ID);
+		} catch (CoreException e) {
+		}
+		this.sbtProject = sbtProject;
+		this.workspace = project.getProject().getWorkspace();
+	}
+
+	/**
+	 * Scan all workspace projects that have SBT natures and try to guess their
+	 * JAR names so that we can use workspace resolution.
+	 * 
+	 * @return map of jar name guesses to projects
+	 */
+	protected Map<String, IProject> scanWorkspaceProjects() {
+		Map<String, IProject> results = new HashMap<String, IProject>();
+		for (IProject project : workspace.getRoot().getProjects()) {
+			try {
+				if (project.hasNature(Constants.SBT_NATURE_ID)
+						&& project.isOpen()) {
+					SbtProjectNature nature = (SbtProjectNature) project
+							.getNature(Constants.SBT_NATURE_ID);
+					BuildProperties bp = nature.getProjectInformation()
+							.getBuildProperties();
+					StringBuilder nameGuess = new StringBuilder();
+					nameGuess.append(bp.name);
+					nameGuess.append("-");
+					nameGuess.append(bp.version);
+					results.put(nameGuess.toString(), project);
+					if (this.sbtProject != null) {
+						StringBuilder crossBuiltName = new StringBuilder();
+						crossBuiltName.append(bp.name);
+						crossBuiltName.append("_");
+						crossBuiltName.append(this.sbtProject
+								.getProjectInformation().getScalaVersion());
+						crossBuiltName.append("-");
+						crossBuiltName.append(bp.version);
+						results.put(crossBuiltName.toString(), project);
+					}
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+		return results;
 	}
 
 	public IClasspathEntry[] getClasspathEntries() {
 		ArrayList<IClasspathEntry> entryList = new ArrayList<IClasspathEntry>();
-        Map<JarInformation, File> libs = new TreeMap<JarInformation, File>();
-        Map<String, File> sources = new HashMap<String, File>();
-        getJars(libs, sources);
-        for (File jar : libs.values()) {
-            String jarName = jar.getName().substring(0, jar.getName().length() - 4);
-            File sourceFile = sources.get(jarName);
-            IPath sourcePath = null;
-            if (sourceFile != null) {
-                sourcePath = new Path(sourceFile.getAbsolutePath());
-            }
-            entryList.add(JavaCore.newLibraryEntry(new Path(jar
-                    .getAbsolutePath()), sourcePath, null));
-        }
+		Map<JarInformation, File> libs = new TreeMap<JarInformation, File>();
+		Map<String, File> sources = new HashMap<String, File>();
+		Map<String, IProject> workspaceProjects = scanWorkspaceProjects();
+		getJars(libs, sources);
+		for (File jar : libs.values()) {
+			String jarName = jar.getName().substring(0,
+					jar.getName().length() - 4);
+			IProject project = workspaceProjects.get(jarName);
+			if (project == null) {
+				File sourceFile = sources.get(jarName);
+				IPath sourcePath = null;
+				if (sourceFile != null) {
+					sourcePath = new Path(sourceFile.getAbsolutePath());
+				}
+				entryList.add(JavaCore.newLibraryEntry(new Path(jar
+						.getAbsolutePath()), sourcePath, null));
+			} else {
+				// Workspace resolution worked!
+				entryList.add(JavaCore.newProjectEntry(project.getFullPath()));
+			}
+		}
 		IClasspathEntry[] entryArray = new IClasspathEntry[entryList.size()];
 		return (IClasspathEntry[]) entryList.toArray(entryArray);
 	}
