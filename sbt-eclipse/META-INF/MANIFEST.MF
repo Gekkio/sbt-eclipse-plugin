@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: SBT Eclipse Classpath Container
+Bundle-Name: SBT Eclipse plugin
 Bundle-SymbolicName: sbt.eclipse;singleton:=true
 Bundle-Version: 0.1
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
