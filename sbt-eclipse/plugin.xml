@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension-point id="sbt.eclipse.hooks" name="Plugin hooks" schema="schema/hooks.exsd"/>
 	<extension point="org.eclipse.jdt.ui.classpathContainerPage">
 		<classpathContainerPage class="sbt.eclipse.SbtClasspathContainerPage"
 			id="sbt.eclipse.CLASSPATH_CONTAINER" name="SBT Dependency Library">

@@ -11,3 +11,6 @@ Require-Bundle: org.eclipse.jdt.core;bundle-version="3.4.2",
  org.eclipse.ui;bundle-version="3.4.1",
  org.eclipse.ui.ide
 Bundle-Vendor: Francisco Treacy
+Export-Package: sbt.eclipse.api
+Bundle-Activator: sbt.eclipse.SbtEclipsePlugin
+Bundle-ActivationPolicy: lazy

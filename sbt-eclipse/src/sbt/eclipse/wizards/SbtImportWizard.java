@@ -21,6 +21,8 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
 import sbt.eclipse.Constants;
+import sbt.eclipse.SbtEclipsePlugin;
+import sbt.eclipse.api.IWarProjectHook;
 import sbt.eclipse.logic.ClasspathRemoverConfigurer;
 import sbt.eclipse.logic.NatureConfigurer;
 
@@ -30,78 +32,76 @@ import sbt.eclipse.logic.NatureConfigurer;
  */
 public class SbtImportWizard extends Wizard implements IImportWizard {
 
-    private SbtImportWizardPage page;
+	private SbtImportWizardPage page;
 
-    @Override
-    public boolean performFinish() {
-        if (!page.isPageComplete()) {
-            return false;
-        }
-        Job job = new WorkspaceJob("Importing SBT project") {
-            @Override
-            public IStatus runInWorkspace(IProgressMonitor monitor)
-                    throws CoreException {
-                IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                String name = page.getBuildProperties().name;
-                IProjectDescription description = workspace
-                        .newProjectDescription(name);
-                description.setLocation(new Path(page.getRoot()
-                        .getAbsolutePath()));
-                description.setNatureIds(new String[] { JavaCore.NATURE_ID });
-                IWorkspaceRoot root = workspace.getRoot();
-                IProject project = root.getProject(name);
-                project.create(description, monitor);
-                project.open(monitor);
+	@Override
+	public boolean performFinish() {
+		if (!page.isPageComplete()) {
+			return false;
+		}
+		Job job = new WorkspaceJob("Importing SBT project") {
+			@Override
+			public IStatus runInWorkspace(IProgressMonitor monitor)
+					throws CoreException {
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+				String name = page.getBuildProperties().name;
+				IProjectDescription description = workspace
+						.newProjectDescription(name);
+				description.setLocation(new Path(page.getRoot()
+						.getAbsolutePath()));
+				description.setNatureIds(new String[] { JavaCore.NATURE_ID });
+				IWorkspaceRoot root = workspace.getRoot();
+				IProject project = root.getProject(name);
+				project.create(description, monitor);
+				project.open(monitor);
 
-                IJavaProject javaProject = JavaCore.create(project);
+				IJavaProject javaProject = JavaCore.create(project);
 
-                // Clean up default classpath entries
-                new ClasspathRemoverConfigurer(project, javaProject)
-                        .run(monitor);
+				// Clean up default classpath entries
+				new ClasspathRemoverConfigurer(project, javaProject)
+						.run(monitor);
 
-                if (page.isScalaProject()) {
-                    new NatureConfigurer(project, Constants.SCALA_NATURE_ID,
-                            true).run(monitor);
-                }
-                if (page.isWarProject()) {
-                    /*
-                     * new NatureConfigurer(project,
-                     * Constants.WST_MODULECORE_NATURE_ID, true) .run(monitor);
-                     * new NatureConfigurer(project,
-                     * Constants.WST_FACET_NATURE_ID, true).run(monitor);
-                     */
-                }
-                new NatureConfigurer(project, Constants.SBT_NATURE_ID, true)
-                        .run(monitor);
+				if (page.isScalaProject()) {
+					new NatureConfigurer(project, Constants.SCALA_NATURE_ID,
+							true).run(monitor);
+				}
+				if (page.isWarProject()) {
+					for (IWarProjectHook hook : SbtEclipsePlugin.getInstance()
+							.getWarProjectHooks()) {
+						hook.importProject(project);
+					}
+				}
+				new NatureConfigurer(project, Constants.SBT_NATURE_ID, true)
+						.run(monitor);
 
-                return Status.OK_STATUS;
-            }
-        };
-        job.schedule();
-        return true;
-    }
+				return Status.OK_STATUS;
+			}
+		};
+		job.schedule();
+		return true;
+	}
 
-    public void init(IWorkbench workbench, IStructuredSelection selection) {
-    }
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	}
 
-    @Override
-    public void addPages() {
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        boolean scalaAvailable = false;
-        boolean wstAvailable = false;
-        for (IProjectNatureDescriptor natureDescriptor : workspace
-                .getNatureDescriptors()) {
-            if (natureDescriptor.getNatureId()
-                    .equals(Constants.SCALA_NATURE_ID)) {
-                scalaAvailable = true;
-            } else if (natureDescriptor.getNatureId().equals(
-                    Constants.WST_MODULECORE_NATURE_ID)) {
-                wstAvailable = true;
-            }
-        }
-        page = new SbtImportWizardPage("Import SBT project", scalaAvailable,
-                wstAvailable);
-        addPage(page);
-    }
+	@Override
+	public void addPages() {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		boolean scalaAvailable = false;
+		boolean wstAvailable = false;
+		for (IProjectNatureDescriptor natureDescriptor : workspace
+				.getNatureDescriptors()) {
+			if (natureDescriptor.getNatureId()
+					.equals(Constants.SCALA_NATURE_ID)) {
+				scalaAvailable = true;
+			} else if (natureDescriptor.getNatureId().equals(
+					Constants.WST_MODULECORE_NATURE_ID)) {
+				wstAvailable = true;
+			}
+		}
+		page = new SbtImportWizardPage("Import SBT project", scalaAvailable,
+				wstAvailable);
+		addPage(page);
+	}
 
 }
