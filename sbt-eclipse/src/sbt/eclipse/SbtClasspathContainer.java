@@ -59,8 +59,8 @@ public class SbtClasspathContainer implements IClasspathContainer {
 		Map<String, IProject> results = new HashMap<String, IProject>();
 		for (IProject project : workspace.getRoot().getProjects()) {
 			try {
-				if (project.hasNature(Constants.SBT_NATURE_ID)
-						&& project.isOpen()) {
+				if (project.isAccessible()
+						&& project.hasNature(Constants.SBT_NATURE_ID)) {
 					SbtProjectNature nature = (SbtProjectNature) project
 							.getNature(Constants.SBT_NATURE_ID);
 					BuildProperties bp = nature.getProjectInformation()
