@@ -1,6 +1,7 @@
 package sbt.eclipse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -16,6 +17,8 @@ public class SbtEclipsePlugin extends AbstractUIPlugin {
 
 	private static SbtEclipsePlugin instance;
 
+	private List<IWarProjectHook> hooks = new ArrayList<IWarProjectHook>();
+
 	public SbtEclipsePlugin() {
 		instance = this;
 	}
@@ -25,12 +28,18 @@ public class SbtEclipsePlugin extends AbstractUIPlugin {
 	}
 
 	public List<IWarProjectHook> getWarProjectHooks() {
-		final List<IWarProjectHook> hooks = new ArrayList<IWarProjectHook>();
+		return hooks;
+	}
+
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
 		try {
 			IConfigurationElement[] config = Platform.getExtensionRegistry()
 					.getConfigurationElementsFor("sbt.eclipse.hooks");
+			System.out.println(Arrays.asList(config));
 			for (IConfigurationElement e : config) {
-				if (!"warHook".equals(e.getName())) {
+				if (!("warHook".equals(e.getName()))) {
 					continue;
 				}
 				final Object o = e.createExecutableExtension("class");
@@ -51,12 +60,6 @@ public class SbtEclipsePlugin extends AbstractUIPlugin {
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
-		return hooks;
-	}
-
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
 	}
 
 }
