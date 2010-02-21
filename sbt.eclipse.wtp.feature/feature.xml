@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="sbt.eclipse.wtp.feature"
+      label="SBT Eclipse plugin - WTP feature"
+      version="0.2.0.qualifier">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jst.common.frameworks" version="1.1.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jst.common.project.facet.core" version="1.4.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jst.common.project.facet.ui" version="1.4.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jst.j2ee" version="1.1.301" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jst.j2ee.ejb" version="1.1.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jst.j2ee.web" version="1.1.301" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jst.jee" version="1.0.201" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jst.jee.ejb" version="1.0.201" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jst.jee.web" version="1.0.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.wst.common.frameworks" version="1.1.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.wst.common.project.facet.core" version="1.4.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.wst.jsdt.web.core" version="1.0.200" match="greaterOrEqual"/>
+      <import plugin="sbt.eclipse" version="0.2.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="sbt.eclipse.wtp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
