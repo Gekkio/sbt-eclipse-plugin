@@ -14,3 +14,5 @@ Bundle-Vendor: Francisco Treacy
 Export-Package: sbt.eclipse.api
 Bundle-Activator: sbt.eclipse.SbtEclipsePlugin
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/slf4j-api-1.5.10.jar,
+ .

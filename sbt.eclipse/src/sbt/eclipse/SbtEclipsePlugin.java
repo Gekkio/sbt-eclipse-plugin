@@ -1,7 +1,6 @@
 package sbt.eclipse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -10,10 +9,15 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.impl.StaticLoggerBinder;
 
 import sbt.eclipse.api.IWarProjectHook;
 
 public class SbtEclipsePlugin extends AbstractUIPlugin {
+
+	private Logger log;
 
 	private static SbtEclipsePlugin instance;
 
@@ -34,10 +38,11 @@ public class SbtEclipsePlugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		StaticLoggerBinder.initialize(getLog(), getBundle().getSymbolicName());
+		this.log = LoggerFactory.getLogger(this.getClass());
 		try {
 			IConfigurationElement[] config = Platform.getExtensionRegistry()
 					.getConfigurationElementsFor("sbt.eclipse.hooks");
-			System.out.println(Arrays.asList(config));
 			for (IConfigurationElement e : config) {
 				if (!("warHook".equals(e.getName()))) {
 					continue;
@@ -46,7 +51,7 @@ public class SbtEclipsePlugin extends AbstractUIPlugin {
 				if (o instanceof IWarProjectHook) {
 					ISafeRunnable runnable = new ISafeRunnable() {
 						public void handleException(Throwable exception) {
-							System.out.println("Exception in client");
+							log.error("Exception in WAR hook", exception);
 						}
 
 						public void run() throws Exception {
@@ -58,7 +63,7 @@ public class SbtEclipsePlugin extends AbstractUIPlugin {
 				}
 			}
 		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
+			log.error("Exception in WAR hook collection", ex);
 		}
 	}
 
