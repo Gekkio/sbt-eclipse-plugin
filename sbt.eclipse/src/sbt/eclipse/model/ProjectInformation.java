@@ -124,7 +124,7 @@ public class ProjectInformation {
 	}
 
 	public IFolder getOutputPath() {
-		return getCrossPath(getOutputRootPath());
+		return getOutputRootPath().getFolder("eclipse");
 	}
 
 	public IFolder getOutputRootPath() {
