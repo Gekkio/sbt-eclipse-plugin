@@ -1,31 +1,13 @@
-sbt-eclipse-plugin
-==================
+This version of sbt-eclipse-plugin has been superseded by [SBT Eclipse integration](http://dumbo.assembla.com/spaces/sbt-eclipse-integration/wiki)
+===============================================================================
 
-### Installation
+[SBT Eclipse integration](http://dumbo.assembla.com/spaces/sbt-eclipse-integration/wiki) is a new project that is a collaboration between me and Stefan Langer. I'll be concentrating my work on that project and won't be updating this plugin anymore.
+
+SBT Eclipse integration is still missing some features from this plugin but should be overall more robust. *(25.08.2010): There has been some discussion of integrating SBT Eclipse integration within Scala IDE. If you are currently using sbt-eclipse-plugin, you might want to wait for a couple of weeks before migrating to SBTEI because some changes might occur if we become a part of Scala IDE*
+
+The old update site is still up and will be for a while, but please try to migrate to SBT Eclipse integration.
+
+### Old update site (will no longer be available in 2011)
 
 Add update site in Eclipse:
 <http://www.jawsy.fi/sbt-eclipse>
-
-### Overview
-
-**NOTE! This README is out of date.**
-
-This is no more than a classpath container for Eclipse.
-
-You just add it to your project and it will automatically include all dependencies under SBT's `lib_managed`.
-
- - Download the first release from the `dist` folder (click on the jar and then `View Raw`)
- - Drop it into your `plugins` Eclipse directory and restart
- - Right-click on the project -> Build path -> Add libraries...
- - Click on `SBT Eclipse Classpath Container` and Finish
-
-Now all your SBT-managed dependencies are included in your project's build path.
-
-### Important note
-**If and only if** you have trouble compiling, you will have to manually change the order of classpath inclusion. For this right-click project -> Properties -> Java Build Path -> Order and Export, and move `SBT Dependency Library` *up* - it needs to be listed before Scala libraries and the JRE.
-
-Also, if you issue the `sbt update` action, then you need to refresh (F5) your project to take the changes into account.
-
-### Other issues
-I only tested it with Eclipse 3.4 on Linux with Scala 2.7.5-final, and Eclipse 3.5 on Mac OS X with Scala 2.7.5-final.
-Please don't hesitate to contact me at francisco dot treacy at gmail.
