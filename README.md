@@ -1,4 +1,4 @@
-This version of sbt-eclipse-plugin has been superseded by [SBT Eclipse integration](http://dumbo.assembla.com/spaces/sbt-eclipse-integration/wiki)
+This version of sbt-eclipse-plugin has been superseded by [SBT Eclipse integration](http://dumbo.assembla.com/spaces/sbt-eclipse-integration/wiki). I will remove this repository and the update site in January 2011!
 ===============================================================================
 
 [SBT Eclipse integration](http://dumbo.assembla.com/spaces/sbt-eclipse-integration/wiki) is a new project that is a collaboration between me and Stefan Langer. I'll be concentrating my work on that project and won't be updating this plugin anymore.
